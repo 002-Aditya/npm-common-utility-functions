@@ -8,9 +8,9 @@ const getCurrentDate = () => {
 
 /**
  * Internal utility to format a date according to the given format.
- * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
+ * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
  * @param {Date} date - Date object to format
- * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
+ * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
  * @returns {string}
  */
 function formatDate(date, format) {
@@ -28,16 +28,61 @@ function formatDate(date, format) {
             return `${dd}-${mm}-${yyyy}`;
         case "DD-MM-YY":
             return `${dd}-${mm}-${yy}`;
+        case "YYYY-MM-DD":
+            return `${yyyy}-${mm}-${dd}`;
         default:
             throw new Error("Unsupported format. Use MM-DD-YYYY, MM-DD-YY, or DD-MM-YYYY");
     }
 }
 
+/**
+ * Parses a date string based on the given format into a Date object.
+ * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+ * @param {string} dateStr - The date string.
+ * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
+ * @returns {Date}
+ * @throws Will throw an error if format is unsupported or date is invalid.
+ */
+function parseDateString(dateStr, format = "DD-MM-YYYY") {
+    const [part1, part2, part3] = dateStr.split('-');
+
+    let day, month, year;
+
+    switch (format) {
+        case "MM-DD-YYYY":
+            [month, day, year] = [part1, part2, part3];
+            break;
+        case "MM-DD-YY":
+            [month, day, year] = [part1, part2, '20' + part3];
+            break;
+        case "DD-MM-YYYY":
+            [day, month, year] = [part1, part2, part3];
+            break;
+        case "DD-MM-YY":
+            [day, month, year] = [part1, part2, '20' + part3];
+            break;
+        case "YYYY-MM-DD":
+            [year, month, day] = [part1, part2, part3];
+            break;
+        default:
+            throw new Error(`Unsupported format: ${format}`);
+    }
+
+    const isoString = `${year}-${month}-${day}`;
+    const date = new Date(isoString);
+
+    if (isNaN(date.getTime())) {
+        throw new Error(`Invalid date string: "${dateStr}" with format "${format}"`);
+    }
+
+    return date;
+}
+
 const DateService = {
     /**
      * Returns the current date formatted as DD-MM-YYYY.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY", | "DD-MM-YY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
      * @returns {string}
      */
     getCurrentDate(format = "DD-MM-YYYY") {
@@ -73,8 +118,8 @@ const DateService = {
 
     /**
      * Returns the first date of the current month formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
      * @returns {string}
      */
     getFirstDateOfMonth(format = "DD-MM-YYYY") {
@@ -105,8 +150,8 @@ const DateService = {
 
     /**
      * Returns yesterday's date formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
      * @returns {string}
      */
     getYesterday(format = "DD-MM-YYYY") {
@@ -117,8 +162,8 @@ const DateService = {
 
     /**
      * Returns tomorrow's date formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
      * @returns {string}
      */
     getTomorrow(format = "DD-MM-YYYY") {
@@ -151,8 +196,8 @@ const DateService = {
 
     /**
      * Returns the last date of the current month formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
      * @returns {string}
      */
     getLastDateOfMonth(format = "DD-MM-YYYY") {
@@ -181,8 +226,8 @@ const DateService = {
 
     /**
      * Returns the start date of the current quarter formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
      * @returns {string}
      */
     getQuarterStartDate(format = "DD-MM-YYYY") {
@@ -197,8 +242,8 @@ const DateService = {
 
     /**
      * Returns the end date of the current quarter formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
      * @returns {string}
      */
     getQuarterEndDate(format = "DD-MM-YYYY") {
@@ -217,7 +262,7 @@ const DateService = {
      * @param {number} month - Month number (1-12)
      * @param {number} year - Full year (e.g., 2025)
      * @param {number} daysToAdd - Number of days to add (can be negative)
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format - Desired output format
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY", "YYYY-MM-DD"} format - Desired output format
      * @returns {string}
      */
     addDays(day, month, year, daysToAdd, format = "DD-MM-YYYY") {
@@ -231,12 +276,36 @@ const DateService = {
      * @param {number} day - Day of the month (1-31)
      * @param {number} month - Month number (1-12)
      * @param {number} year - Full year (e.g., 2025)
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format - Desired output format
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format - Desired output format
      * @returns {string}
      */
     getAnyDate(day, month, year, format = "DD-MM-YYYY") {
         const date = new Date(year, month - 1, day);
         return formatDate(date, format);
+    },
+
+    /**
+     * Validates if a given input is a valid date.
+     * @param {*} date - Input to check.
+     * @returns {boolean}
+     */
+    isValidDate(date) {
+        return date instanceof Date && !isNaN(date.valueOf());
+    },
+
+    /**
+     * Return boolean: true if startDate is less than endDate, else false.
+     * Works with multiple formats.
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {string} startDate
+     * @param {string} endDate
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
+     * @returns {boolean}
+     */
+    areDatesValid(startDate, endDate, format = "DD-MM-YYYY") {
+        const start = parseDateString(startDate, format);
+        const end = parseDateString(endDate, format);
+        return start < end;
     }
 
 };
