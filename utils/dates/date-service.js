@@ -330,6 +330,29 @@ const DateService = {
         return day === 0 || day === 6;
     },
 
+    /**
+     * This function returns an object that contains every information about current date
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
+     * @returns {object}
+     */
+    getInfoAboutCurrentDate(format = "DD-MM-YYYY") {
+        const date = getCurrentDate();
+        let response = {};
+        response.date = date.getDate();
+        response.month = this.getNumericMonth();
+        response.year = date.getFullYear();
+        response.isWeekend = this.isWeekend(date);
+        response.isLeapYear = this.isLeapYear(date.getFullYear());
+        response.fullWeekDay = this.getDayOfWeek();
+        response.shortWeekDay = this.getDayOfWeek(true);
+        response.fullMonthName = this.getMonthName();
+        response.shortMonthName = this.getMonthName(true);
+        response.fullDate = date;
+        response.formattedDate = formatDate(date, format);
+        return response;
+    }
+
 };
 
 module.exports = DateService;
