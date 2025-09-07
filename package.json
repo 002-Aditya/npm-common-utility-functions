@@ -1,0 +1,19 @@
+{
+  "name": "common-utility-functions",
+  "version": "1.0.0",
+  "description": "These are the common functions that are used in most of the node js projects and this package will be used to serve multiple projects and not just one in the near future.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/002-Aditya/npm-common-utility-functions.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/002-Aditya/npm-common-utility-functions/issues"
+  },
+  "homepage": "https://github.com/002-Aditya/npm-common-utility-functions#readme"
+}
