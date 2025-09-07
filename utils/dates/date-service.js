@@ -8,9 +8,9 @@ const getCurrentDate = () => {
 
 /**
  * Internal utility to format a date according to the given format.
- * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY"
+ * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
  * @param {Date} date - Date object to format
- * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY"} format
+ * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
  * @returns {string}
  */
 function formatDate(date, format) {
@@ -26,6 +26,8 @@ function formatDate(date, format) {
             return `${mm}-${dd}-${yy}`;
         case "DD-MM-YYYY":
             return `${dd}-${mm}-${yyyy}`;
+        case "DD-MM-YY":
+            return `${dd}-${mm}-${yy}`;
         default:
             throw new Error("Unsupported format. Use MM-DD-YYYY, MM-DD-YY, or DD-MM-YYYY");
     }
@@ -34,8 +36,8 @@ function formatDate(date, format) {
 const DateService = {
     /**
      * Returns the current date formatted as DD-MM-YYYY.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY", | "DD-MM-YY"} format
      * @returns {string}
      */
     getCurrentDate(format = "DD-MM-YYYY") {
@@ -70,18 +72,15 @@ const DateService = {
     },
 
     /**
-     * Returns the first date of the current month formatted as YYYY-MM-DD.
+     * Returns the first date of the current month formatted according to the given format.
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
      * @returns {string}
      */
-    getFirstDateOfMonth() {
+    getFirstDateOfMonth(format = "DD-MM-YYYY") {
         const currentDate = getCurrentDate();
         const firstDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-
-        const yyyy = firstDate.getFullYear();
-        const mm = String(firstDate.getMonth() + 1).padStart(2, '0');
-        const dd = String(firstDate.getDate()).padStart(2, '0');
-
-        return `${dd}-${mm}-${yyyy}`;
+        return formatDate(firstDate, format);
     },
 
     /**
@@ -106,8 +105,8 @@ const DateService = {
 
     /**
      * Returns yesterday's date formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
      * @returns {string}
      */
     getYesterday(format = "DD-MM-YYYY") {
@@ -118,8 +117,8 @@ const DateService = {
 
     /**
      * Returns tomorrow's date formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
      * @returns {string}
      */
     getTomorrow(format = "DD-MM-YYYY") {
@@ -152,8 +151,8 @@ const DateService = {
 
     /**
      * Returns the last date of the current month formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
      * @returns {string}
      */
     getLastDateOfMonth(format = "DD-MM-YYYY") {
@@ -182,8 +181,8 @@ const DateService = {
 
     /**
      * Returns the start date of the current quarter formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
      * @returns {string}
      */
     getQuarterStartDate(format = "DD-MM-YYYY") {
@@ -198,8 +197,8 @@ const DateService = {
 
     /**
      * Returns the end date of the current quarter formatted according to the given format.
-     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY"
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY"} format
+     * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY"
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format
      * @returns {string}
      */
     getQuarterEndDate(format = "DD-MM-YYYY") {
@@ -218,12 +217,25 @@ const DateService = {
      * @param {number} month - Month number (1-12)
      * @param {number} year - Full year (e.g., 2025)
      * @param {number} daysToAdd - Number of days to add (can be negative)
-     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY"} format - Desired output format
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format - Desired output format
      * @returns {string}
      */
     addDays(day, month, year, daysToAdd, format = "DD-MM-YYYY") {
         const date = new Date(year, month - 1, day);
         date.setDate(date.getDate() + daysToAdd);
+        return formatDate(date, format);
+    },
+
+    /**
+     * Returns date in the desired format by day, month, and year.
+     * @param {number} day - Day of the month (1-31)
+     * @param {number} month - Month number (1-12)
+     * @param {number} year - Full year (e.g., 2025)
+     * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY"} format - Desired output format
+     * @returns {string}
+     */
+    getAnyDate(day, month, year, format = "DD-MM-YYYY") {
+        const date = new Date(year, month - 1, day);
         return formatDate(date, format);
     }
 
