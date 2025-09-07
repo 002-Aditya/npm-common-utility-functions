@@ -351,6 +351,26 @@ const DateService = {
         response.fullDate = date;
         response.formattedDate = formatDate(date, format);
         return response;
+    },
+
+    /**
+     * Calculates age in years from a given birthdate.
+     * @param {Date|string} dob - Date of birth.
+     * @returns {number|null} - Age in years or null if invalid DOB.
+     */
+    getAgeFromDOB(dob) {
+        let birthDate = dob;
+        if (typeof dob === 'string') {
+            birthDate = parseDateString(dob);
+        }
+        if (!this.isValidDate(birthDate)) return null;
+        const today = getCurrentDate();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
     }
 
 };
