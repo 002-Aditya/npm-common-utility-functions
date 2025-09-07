@@ -306,7 +306,18 @@ const DateService = {
         const start = parseDateString(startDate, format);
         const end = parseDateString(endDate, format);
         return start < end;
-    }
+    },
+
+    /**
+     * Checks if a given date is a weekend (Saturday or Sunday).
+     * @param {Date} date - The date to check.
+     * @returns {boolean}
+     * @example - DateService.isWeekend(new Date("08-09-2025"))
+     */
+    isWeekend(date) {
+        const day = date.getDay();
+        return day === 0 || day === 6;
+    },
 
 };
 
