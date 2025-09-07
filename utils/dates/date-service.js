@@ -37,13 +37,24 @@ function formatDate(date, format) {
 
 /**
  * Parses a date string based on the given format into a Date object.
+ * If no format is provided, returns the date with time zeroed out (YYYY-MM-DD).
  * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
  * @param {string} dateStr - The date string.
- * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
+ * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} [format]
  * @returns {Date}
- * @throws Will throw an error if format is unsupported or date is invalid.
  */
-function parseDateString(dateStr, format = "DD-MM-YYYY") {
+function parseDateString(dateStr, format) {
+    if (!format) {
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) {
+            throw new Error(`Invalid date: ${dateStr}`);
+        }
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        return new Date(`${yyyy}-${mm}-${dd}`);
+    }
+
     const [part1, part2, part3] = dateStr.split('-');
 
     let day, month, year;
