@@ -11,7 +11,7 @@ const getCurrentDate = () => {
  * Supported formats: "MM-DD-YYYY", "MM-DD-YY", "DD-MM-YYYY", "DD-MM-YY", "YYYY-MM-DD"
  * @param {Date} date - Date object to format
  * @param {"MM-DD-YYYY" | "MM-DD-YY" | "DD-MM-YYYY" | "DD-MM-YY" | "YYYY-MM-DD"} format
- * @returns {string}
+ * @returns {string | Date}
  */
 function formatDate(date, format) {
     const dd = String(date.getDate()).padStart(2, '0');
@@ -31,7 +31,7 @@ function formatDate(date, format) {
         case "YYYY-MM-DD":
             return `${yyyy}-${mm}-${dd}`;
         default:
-            throw new Error("Unsupported format. Use MM-DD-YYYY, MM-DD-YY, or DD-MM-YYYY");
+            return new Date(date);
     }
 }
 
@@ -355,19 +355,21 @@ const DateService = {
 
     /**
      * Calculates age in years from a given birthdate.
-     * @param {Date|string} dob - Date of birth.
-     * @returns {number|null} - Age in years or null if invalid DOB.
+     * @param {number} date - Date.
+     * @param {number} month - Month in which born
+     * @param {number} year - Year of birth
+     * @returns {number} - Age in years.
      */
-    getAgeFromDOB(dob) {
-        let birthDate = dob;
-        if (typeof dob === 'string') {
-            birthDate = parseDateString(dob);
-        }
-        if (!this.isValidDate(birthDate)) return null;
+    getAgeFromDOB(date, month, year) {
+        const birthDate = parseDateString(`${year}-${month}-${date}`);
         const today = getCurrentDate();
         let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+
+        const hasHadBirthdayThisYear =
+            today.getMonth() > birthDate.getMonth() ||
+            (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+
+        if (!hasHadBirthdayThisYear) {
             age--;
         }
         return age;
